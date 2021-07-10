@@ -6,7 +6,13 @@ const fs = require("fs")
 const  bodyparser= require("body-parser");
 const app = express();
 const mongoose = require('mongoose');
-mongoose.connect('mongodb://localhost/gymdata', {useNewUrlParser: true});
+mongoose.connect('mongodb+srv://dexter:dexteract007@cluster0.h7bii.mongodb.net/gym?retryWrites=true&w=majority',
+{
+    useNewUrlParser: true,
+    useUnifiedTopology:true
+}).then(() =>{
+  console.log('connected to db')
+})
 const port = 80;
 
 const gymSchema = new mongoose.Schema({
@@ -16,14 +22,14 @@ const gymSchema = new mongoose.Schema({
     address:String,
     more:String,
   });
-  var gym = mongoose.model('gym', gymSchema);
+  var item= mongoose.model('item', gymSchema);
 // EXPRESS SPECIFIC STUFF
 app.use('/static', express.static('static')) // For serving static files
 app.use(express.urlencoded())
 // PUG SPECIFIC STUFF
 // app.set('view engine', 'pug') // Set the template engine as pug
 // app.set('views', path.join(__dirname, 'views')) // Set the views directory
-const back=fs.readFileSync("./index.html")
+//const back=fs.readFileSync("./index.html")
 // ENDPOINTS
 app.get('/', (req, res)=>{
     const con = "This is the best content on the internet so far so use it wisely"
@@ -34,7 +40,7 @@ app.get('/', (req, res)=>{
 
 app.post('/',(req,res)=>{
   
- var mydata= new gym(req.body);
+ var mydata= new item(req.body);
  mydata.save().then(()=>{
      res.send(" client has be admited to gymdata base ")
  }).catch(()=>{
@@ -49,4 +55,5 @@ app.post('/',(req,res)=>{
 app.listen(port, ()=>{
     console.log(`The application started successfully on  ${port} port`);
 });
+
 
